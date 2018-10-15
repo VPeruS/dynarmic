@@ -90,6 +90,7 @@ else()
     if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
         list(APPEND DYNARMIC_CXX_FLAGS
              -std=c++17)
+        set(CMAKE_CXX_STANDARD_REQUIRED OFF)
     endif()
 endif()
 
