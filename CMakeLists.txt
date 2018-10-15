@@ -86,6 +86,11 @@ else()
         list(APPEND DYNARMIC_CXX_FLAGS
              -Werror)
     endif()
+
+    if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+        list(APPEND DYNARMIC_CXX_FLAGS
+             -std=c++17)
+    endif()
 endif()
 
 # Arch detection
