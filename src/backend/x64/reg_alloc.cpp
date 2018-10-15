@@ -370,10 +370,13 @@ HostLoc RegAlloc::ScratchImpl(HostLocList desired_locations) {
     return location;
 }
 
-void RegAlloc::HostCall(IR::Inst* result_def, boost::optional<Argument&> arg0, boost::optional<Argument&> arg1, boost::optional<Argument&> arg2, boost::optional<Argument&> arg3) {
+void RegAlloc::HostCall(IR::Inst* result_def, std::optional<Argument::copyable_reference> arg0,
+                        std::optional<Argument::copyable_reference> arg1,
+                        std::optional<Argument::copyable_reference> arg2,
+                        std::optional<Argument::copyable_reference> arg3) {
     constexpr size_t args_count = 4;
     constexpr std::array<HostLoc, args_count> args_hostloc = { ABI_PARAM1, ABI_PARAM2, ABI_PARAM3, ABI_PARAM4 };
-    const std::array<boost::optional<Argument&>, args_count> args = { arg0, arg1, arg2, arg3 };
+    const std::array<std::optional<Argument::copyable_reference>, args_count> args = { arg0, arg1, arg2, arg3 };
 
     static const std::vector<HostLoc> other_caller_save = [args_hostloc]() {
         std::vector<HostLoc> ret(ABI_ALL_CALLER_SAVE.begin(), ABI_ALL_CALLER_SAVE.end());
@@ -452,12 +455,12 @@ HostLoc RegAlloc::SelectARegister(HostLocList desired_locations) const {
     return candidates.front();
 }
 
-boost::optional<HostLoc> RegAlloc::ValueLocation(const IR::Inst* value) const {
+std::optional<HostLoc> RegAlloc::ValueLocation(const IR::Inst* value) const {
     for (size_t i = 0; i < hostloc_info.size(); i++)
         if (hostloc_info[i].ContainsValue(value))
             return static_cast<HostLoc>(i);
 
-    return boost::none;
+    return std::nullopt;
 }
 
 void RegAlloc::DefineValueImpl(IR::Inst* def_inst, HostLoc host_loc) {
